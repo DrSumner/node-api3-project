@@ -22,20 +22,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', validateUserId, (req, res) => {
-  // RETURN THE USER OBJECT
-  // this needs a middleware to verify user id
-  
-  users.getById(req.params.id)
-  .then(user => {
-    res.json(user)
-})
-  .catch(err => {
-    res.status(500).json({
-      message: 'error bebe',
-    err: err.message,
-    stack: err.stack,
-    })
-  })
+    res.json(req.user)
 });
 
 router.post('/', validateUser, (req, res) => {
@@ -112,12 +99,12 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 });
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
-  // RETURN THE NEWLY CREATED USER POST
-  // this needs a middleware to verify user id
-  // and another middleware to check that the request body is valid
-  const post = req.body
+
+  const {text} = req.body
   const {id} = req.params
-  post.user_id = id
+  const post = {
+  user_id : id,
+  text : text}
   posts.insert(post)
   .then(newPost => {
     res.status(201).json(newPost)

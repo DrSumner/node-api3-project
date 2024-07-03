@@ -13,10 +13,12 @@ function validateUserId(req, res, next) {
   // DO YOUR MAGIC
   users.getById(req.params.id)
   .then(user => {
-    if(!user){ res.status(404).json({message: "user not found" })}
+    if(user){
+      req.user = user
+      next() }
     else
-  req.user = user
- next()
+    res.status(404).json({message: "user not found" })
+ 
   })
   .catch(err => {
     res.status(500).json({
@@ -33,20 +35,20 @@ function validateUser(req, res, next) {
 
   const user = req.body
 
-  if (!user.name || user.name.length <= 0){ res.status(400)
+  if (!user.name || user.name.length <= 0){ return res.status(400)
     .json({message:"missing required name field" })} 
-  else
+  
   next()
 }
 
 function validatePost(req, res, next) {
   // DO YOUR MAGIC
 
-  const post = req.body
+  const {text} = req.body
 
-  if (!post.text || post.text.length <= 0){ res.status(400)
+  if (!text || text.length === 0){ return res.status(400)
     .json({message:"missing required text field" })} 
-  else
+  
   next()
 }
 
